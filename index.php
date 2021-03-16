@@ -26,54 +26,122 @@
     } 
 ?>
 
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="?path=darbuotojai">Darbuotojai</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="?path=projektai">Projektai</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<br>
+  <div class="container-fluid ">
     <div class="row">
       <div class="col-12">
 
-            <div class="card text-center">
-              <div class="card-header">
-                <ul class="nav nav-tabs card-header-tabs">
-                  <li class="nav-item">
-                    <a class="nav-link active" style="background-color: lightblue; color:black" aria-current="true" href="#">Darbuotojai</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" style="color:black" href="#">Projektai</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
+      <?php if(isset($_GET["path"]) and $_GET['path'] == 'darbuotojai'): ?>           
+
 
     <?php
-    $sql = 'SELECT id, name FROM employees';
-    $result = mysqli_query($conn, $sql);
-    
-    if (mysqli_num_rows($result) > 0) {
-      print('<table class="table table-striped table-hover">');
-      print('<thead style="background-color: lightblue"> <tbody>');
-      print('<tr><th>Id</th><th>Vardas</th><th>Projektas</th><th>Veiksmai</th>');
-     
-     while($row = mysqli_fetch_assoc($result)) {
-        print ('<tr><td>' . $row['id'] . '</td><td>' . $row['name'] . '</td><td>' . "" . '</td><td>' . "" .  '</td></tr>');  
-     }
-        print('</table></tbody>');
+    $sql = 
+          '
+          SELECT
+              Employees.id,
+              Employees.name,
+              Projects.project_name
+          FROM Employees 
+          JOIN Projects
+            ON Employees.project_id = Projects.id;  
+          ';
+          $result = mysqli_query($conn, $sql);
+          
+          if (mysqli_num_rows($result) > 0) {
+            print('<table class="table table-striped table-hover">');
+            print('<thead style="background-color: lightblue"> ');
+            print('<tr><th>Id</th><th>Vardas</th><th>Projektas</th><th>Veiksmai</th><tr><tbody>');
+          
+          while($row = mysqli_fetch_assoc($result)) {
+              print ('<tr>
+                        <td>' . $row['id'] . '</td>
+                        <td>' . $row['name'] . '</td>
+                        <td>' . $row['project_name'] . '</td>
+                        <td>' . "" .  '</td>
+                      </tr>');  
+          }
+              print('</tbody></table>');
 
-    } else {
-     echo "0 results";
-    }
-?>
+          } else {
+          echo "0 results";
+          }
+      ?>
 
-<div class="container">
-        <div class="row">
-            <div class="col-4">
-                <form action="" method="">    
-                  <input type="name" name="name" class="form-control" id="name" placeholder="Naujas darbuotojo vardas, pavardė">
-            </div>
-            <div class="col-2">
-                  <button type="button" name="submit" class="btn btn-primary" style="background-color: lightblue; color:black; border-color:black">Pridėti darbuotoją</button>
-            </div>
-                </form>
+      <div class="container">
+              <div class="row">
+                  <div class="col-4">
+                      <form action="" method="">    
+                        <input type="name" name="name" class="form-control" id="name" placeholder="Naujas darbuotojo vardas, pavardė">
+                  </div>
+                  <div class="col-2">
+                        <button type="button" name="submit" class="btn btn-primary" style="background-color: lightblue; color:black; border-color:black">Pridėti darbuotoją</button>
+                  </div>
+                      </form>
+              </div>
         </div>
-  </div>
+        <?php elseif(isset($_GET["path"]) and $_GET['path'] == 'projektai'): ?>
+
+          <?php 
+            $sql = 
+            '
+            SELECT
+                Projects.id,
+                Projects.project_name
+            FROM Projects  
+            ';
+            $result = mysqli_query($conn, $sql);
+            
+            if (mysqli_num_rows($result) > 0) {
+            print('<table class="table table-striped table-hover">');
+            print('<thead style="background-color: lightblue"> ');
+            print('<tr><th>Id</th><th>Projektas</th><th>Vardas</th><th>Veiksmai</th><tr><tbody>');
+
+            while($row = mysqli_fetch_assoc($result)) {
+              print ('<tr>
+                  <td>' . $row['id'] . '</td>
+                  <td>' . $row['project_name']. '</td>'
+              );
+
+                echo '<td>';
+                $sql2 = 'SELECT employees.name FROM employees WHERE project_id =' . $row['id'];
+                $result2 = mysqli_query($conn, $sql2);
+                $name = array();
+                if (mysqli_num_rows($result2) > 0) {
+                  while($row2 = mysqli_fetch_assoc($result2)) {
+                    $name[] = $row2['name']; //<td>' . $row['project_name'] . '</td>
+                  }
+                }
+                echo implode(', ', $name);
+                echo '</td>';
+              
+                print ('<td>' . "" .  '</td>');
+              print ('</tr>'); 
+            }
+            print('</tbody></table>');
+          }
+            
+          ?>
+
+        <?php endif; ?>
+<br>
+<br>
 <br>
 <br>
 <div class="container-fluid">
@@ -81,7 +149,7 @@
         <div class="col-12">
           <table class="table table-striped table-hover">
 
-          <thead style="background-color: lightblue">
+        <thead style="background-color: lightblue">
         <tr>
           <th scope="col">Id</th>
           <th scope="col">Vardas Pavardė</th>
