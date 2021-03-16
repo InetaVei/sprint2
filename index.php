@@ -43,7 +43,6 @@
     </div>
   </div>
 </nav>
-<br>
   <div class="container-fluid ">
     <div class="row">
       <div class="col-12">
@@ -74,24 +73,27 @@
                         <td>' . $row['id'] . '</td>
                         <td>' . $row['name'] . '</td>
                         <td>' . $row['project_name'] . '</td>
-                        <td>' . "" .  '</td>
-                      </tr>');  
+                        <td>' . '<form action="" method="post">
+                                  <button type="button" name="submit" class="btn btn-primary btn-sm" style="background-color: lightblue; color:black; border-color:black">Ištrinti</button>
+                                  <button type="button" name="submit" class="btn btn-primary btn-sm" style="background-color: lightblue; color:black; border-color:black">Atnaujinti</button>
+                                  </form>' .  '</td></tr>');  
           }
               print('</tbody></table>');
-
+              
           } else {
           echo "0 results";
           }
+          
       ?>
 
       <div class="container">
               <div class="row">
                   <div class="col-4">
-                      <form action="" method="">    
+                      <form action="" method="post">    
                         <input type="name" name="name" class="form-control" id="name" placeholder="Naujas darbuotojo vardas, pavardė">
                   </div>
                   <div class="col-2">
-                        <button type="button" name="submit" class="btn btn-primary" style="background-color: lightblue; color:black; border-color:black">Pridėti darbuotoją</button>
+                        <button type="submit" name="submit" class="btn btn-primary" style="background-color: lightblue; color:black; border-color:black">Pridėti darbuotoją</button>
                   </div>
                       </form>
               </div>
@@ -130,63 +132,29 @@
                 }
                 echo implode(', ', $name);
                 echo '</td>';
-              
-                print ('<td>' . "" .  '</td>');
-              print ('</tr>'); 
+                print ('<td>' . '<form action="" method="post">
+                                  <button type="button" name="submit" class="btn btn-primary btn-sm" style="background-color: lightblue; color:black; border-color:black">Ištrinti</button>
+                                  <button type="button" name="submit" class="btn btn-primary btn-sm" style="background-color: lightblue; color:black; border-color:black">Atnaujinti</button>
+                                  </form>' .  '</td></tr>');
+                print ('</tr>'); 
             }
-            print('</tbody></table>');
+                print('</tbody></table>');
           }
             
           ?>
+                <div class="container">
+              <div class="row">
+                  <div class="col-4">
+                      <form action="" method="post">    
+                        <input type="name" name="name" class="form-control" id="name" placeholder="Naujas darbuotojo vardas, pavardė">
+                  </div>
+                  <div class="col-2">
+                        <button type="submit" name="submit" class="btn btn-primary" style="background-color: lightblue; color:black; border-color:black">Pridėti darbuotoją</button>
+                  </div>
+                      </form>
+              </div>
+        </div>
 
         <?php endif; ?>
-<br>
-<br>
-<br>
-<br>
-<div class="container-fluid">
-      <div class="row">
-        <div class="col-12">
-          <table class="table table-striped table-hover">
-
-        <thead style="background-color: lightblue">
-        <tr>
-          <th scope="col">Id</th>
-          <th scope="col">Vardas Pavardė</th>
-          <th scope="col">Projektas</th>
-          <th scope="col">Veiksmas</th>
-        </tr>
-      </thead>
-
-  <tbody>
-    <tr>
-      <th scope="row">1</th>
-        <td>Petras Petraitis</td>
-        <td>Personalo skyrius</td>
-      <td>               
-         <form action="" method="post">
-         <button type="button" name="submit" class="btn btn-primary btn-sm" style="background-color: lightblue; color:black; border-color:black">Ištrinti</button>
-         <button type="button" name="submit" class="btn btn-primary btn-sm" style="background-color: lightblue; color:black; border-color:black">Atnaujinti</button>
-          </form>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-    <div class="container">
-        <div class="row">
-          <div class="col-4">
-              <form action="" method="">    
-                <input type="name" name="name" class="form-control" id="name" placeholder="Naujas darbuotojo vardas, pavardė">
-          </div>
-            <div class="col-2">
-                <button type="button" name="submit" class="btn btn-primary" style="background-color: lightblue; color:black; border-color:black">Pridėti darbuotoją</button>
-            </div>
-            </form>
-        </div>
-    </div>
-   </div>
-  </div>
- </div>
 </body>
 </html>
