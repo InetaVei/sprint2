@@ -43,7 +43,7 @@
     </div>
   </div>
 </nav>
-  <div class="container-fluid ">
+  <div class="container-fluid">
     <div class="row">
       <div class="col-12">
 
@@ -104,7 +104,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       
           <?php
       if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $id = $_POST['submit'];
+        $id = $_POST['project_submit'];
         if (!empty($id)) {
           $sql = 'DELETE FROM Projects WHERE id = ?';
           $stmt = $conn->prepare($sql);
@@ -119,6 +119,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       ?>
 
       <?php if(isset($_GET["path"]) and $_GET['path'] == 'darbuotojai'): ?>
+
 
     <?php
     $sql = 
@@ -138,17 +139,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             print('<thead style="background-color: lightblue"> ');
             print('<tr><th>Nr</th><th>Darbuotojas</th><th>Projektas</th><th>Veiksmai</th><tr><tbody>');
           $i = 1;
+          
           while($row = mysqli_fetch_assoc($result)) {
+            
               print ('<tr>
                         <td>' . $i . '</td>
                         <td>' . $row['name'] . '</td>
                         <td>' . $row['project_name'] . '</td>
-                        <td>' . '<form action="'. $_SERVER['PHP_SELF'] .'" method="post">
+                        <td>' . '<form action="'. $_SERVER['PHP_SELF'] .'" method="post" >
+                                <div class="container-fluid">
+                                <div class="row">
+                                <div class="col-12">
 
-                                  <button type="submit" name="submit" class="btn btn-outline-primary btn-sm" value="'. $row['id'] .'" style="background-color: lightblue; color:black; border-color:black">Ištrinti</button>
+                                <button type="submit" name="submit" class="btn btn-outline-primary btn-sm" value="'. $row['id'] .'" style="background-color: lightblue; color:black; border-color:black">Ištrinti</button></form>
 
-                                  <button type="button" name="submit" class="btn btn-primary btn-sm" style="background-color: lightblue; color:black; border-color:black">Atnaujinti</button>
-                                  </form>' .  '</td></tr>'); 
+                                <a href="?path=darbuotojai&update='. $row['id'].'" type="button" name="submit" class="btn btn-primary btn-sm" style="background-color: lightblue; color:black; border-color:black">Atnaujinti</a>
+                                ' .  '
+                                </div>
+                                </div>
+                                </div>
+                                </td></tr>'
+                                ); 
+                                  
               $i++;
           }
               print('</tbody></table>');
@@ -159,17 +171,105 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       ?>
 
       <div class="container">
-              <div class="row">
-                  <div class="col-4">
+        <div class="row">
+            <div class="col-4">
                   <form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>?path=darbuotojai">   
                         <input type="text" name="name" class="form-control" id="name" placeholder="Naujas darbuotojo vardas, pavardė">
-                  </div>
+            </div>
                   <div class="col-2">
                         <button type="submit" name="submit" class="btn btn-primary" style="background-color: lightblue; color:black; border-color:black">Pridėti darbuotoją</button>
                   </div>
                       </form>
-              </div>
-        </div>
+                      <div class="col-4"></div>
+                      <div class="col-2"></div>
+            </div>       
+      </div>
+
+
+        <?php if(isset($_GET["update"])): ?>
+                <?php $employess_id = $_GET["update"]; ?>
+           <form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>?path=darbuotojai">  
+          <?php 
+          $sql = 
+          '
+          SELECT
+              name
+          FROM Employees 
+              WHERE id = '. $employess_id;
+          $result = mysqli_query($conn, $sql);
+
+          if (mysqli_num_rows($result) > 0) {
+          while($row = mysqli_fetch_assoc($result)) {
+            echo '<div class="container">
+            <div class="row">
+             <div class="col-4">
+            <input type="text" name="update_name" class="form-control" id="name" placeholder="" value="'. $row['name'] .'">
+            </div>
+            </div>
+            </div>';
+          }
+         } 
+        ?>
+
+
+        <div class="container">
+          <div class="row">
+              <div class="col-4">
+                <select class="form-select" aria-label="Default select example">
+                  <option selected>Projektai</option>
+
+                <?php
+            $sql = 
+                  '
+                  SELECT
+                      id,
+                      project_name
+                  FROM Projects 
+                  ';
+                  $result = mysqli_query($conn, $sql);
+
+                  if (mysqli_num_rows($result) > 0) {
+                    while($row = mysqli_fetch_assoc($result)) {
+                      echo '<option value="'.$row['id'].'">'.$row['project_name'].'</option>' 
+                      ;
+                    }
+                  } else {
+                    echo 'no records';
+                  }
+              ?>
+            </div>
+          </div>
+      </div>
+
+        </select>
+                  <button type="submit" name="submit" class="btn btn-primary" style="background-color: lightblue; color:black; border-color:black">Atnaujinti</button>
+                  </form>
+
+
+
+
+
+
+
+                  <?php
+              if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                $update_name = $_POST['update_name'];
+
+                echo 'testuojam';
+              }
+              ?>
+
+                  <?php endif; ?>
+
+
+
+                  
+
+
+
+
+
+
 
 
     <?php elseif(isset($_GET["path"]) and $_GET['path'] == 'projektai'): ?>
@@ -209,7 +309,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 print ('<td>' .
                       '<form action="'. $_SERVER['PHP_SELF'] .'" method="post">
 
-                      <button type="submit" name="submit" class="btn btn-primary btn-sm" value="'. $row['id'] .'" style="background-color: lightblue; color:black; border-color:black">Ištrinti</button>
+                      <button type="submit" name="project_submit" class="btn btn-primary btn-sm" value="'. $row['id'] .'" style="background-color: lightblue; color:black; border-color:black">Ištrinti</button>
 
                       <button type="button" name="submit" class="btn btn-primary btn-sm" style="background-color: lightblue; color:black; border-color:black">
                       Atnaujinti
@@ -229,7 +329,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               <div class="row">
                   <div class="col-4">
                   <form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>?path=projektai"> 
-                        <input type="text" name="name" class="form-control" id="name" placeholder="Naujas projekto pavadinimas">
+                        <input type="text" name="project_name" class="form-control" id="name" placeholder="Naujas projekto pavadinimas">
                   </div>
                   <div class="col-2">
                         <button type="submit" name="submit" class="btn btn-primary" style="background-color: lightblue; color:black; border-color:black">Pridėti projektą</button>
@@ -238,6 +338,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               </div>
         </div>
 
-        <?php endif; ?>
+        
+
+<?php endif; ?>
+
+             
+
+         <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
 </body>
 </html>
