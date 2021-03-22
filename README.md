@@ -6,7 +6,7 @@
 Create a fully working CRUD (create/read/update/delete) application using PHP and SQL.
 
 ## Project features
-- See the list of all employees and projects in separate pages;
+- See the list of all employees and projects in the same or separate pages;
 - Update employees page: add/delete/update employee data and assign project to employee;
 - Update projects page: add/delete/update project data;
 
