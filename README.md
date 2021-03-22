@@ -3,7 +3,7 @@
 # Sprint2
 ### PHP CRUD application
 
-To create a fully working CRUD (create/read/update/delete) application using PHP and SQL.
+Create a fully working CRUD (create/read/update/delete) application using PHP and SQL.
 
 ## Project features
 - See the list of all projects and employees in separate pages;
