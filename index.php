@@ -254,7 +254,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-
             <?php
                $sql = '
                UPDATE employee 
