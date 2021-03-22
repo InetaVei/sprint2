@@ -49,7 +49,7 @@
 
 
 <?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST['name'] != '') {
     $name = $_POST['name'];
     if (empty($name)) {
         echo "Name is empty";
@@ -68,7 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
        <?php
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST['project_name'] != '') {
             $project_name = $_POST['project_name'];
             if (empty($project_name)) {
                 echo "Project name is empty";
@@ -118,8 +118,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       }
       ?>
 
-      <?php if(isset($_GET["path"]) and $_GET['path'] == 'darbuotojai'): ?>
+  <?php
+  if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST['update_name'] != '') {
+    $update_name = $_POST['update_name'];
+    $project_id = $_POST['project_id'];
+    $name_id = $_POST['name_id'];
+    if (!empty($update_name && !empty($project_id))) {      
+          $sql = "UPDATE employees SET name =?, project_id=? WHERE id=?";
+          $stmt = $conn->prepare($sql);
+          $stmt->bind_param('sii', $_POST['update_name'], $_POST['project_id'], $_POST['name_id']);
+          $res = $stmt->execute();
+          $stmt->close();
+          mysqli_close($conn);
+          header("Location: ?path=darbuotojai");
+          die();
+    }
+  }
+  ?>
 
+    <?php
+      if (isset($_POST['update_project2'])) {
+        $project_name2 = $_POST['project_name2'];
+        $project_id2 = $_POST['project_id2'];
+        echo $project_name2;
+        echo $project_id2;
+        if (!empty($project_name2) && !empty($project_id2)) {      
+          echo $sql = "UPDATE projects SET project_name=? WHERE id=?";
+          $stmt = $conn->prepare($sql);
+          $stmt->bind_param('si', $project_name2, $project_id2);
+          $res = $stmt->execute();
+          $stmt->close();
+          mysqli_close($conn);
+          header("Location: ?path=projektai");
+          die();
+        }
+      }
+    ?>
+
+      <?php if(isset($_GET["path"]) and $_GET['path'] == 'darbuotojai'): ?>
 
     <?php
     $sql = 
@@ -142,25 +178,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           
           while($row = mysqli_fetch_assoc($result)) {
             
-              print ('<tr>
-                        <td>' . $i . '</td>
-                        <td>' . $row['name'] . '</td>
-                        <td>' . $row['project_name'] . '</td>
-                        <td>' . '<form action="'. $_SERVER['PHP_SELF'] .'" method="post" >
-                                <div class="container-fluid">
-                                <div class="row">
-                                <div class="col-12">
-
-                                <button type="submit" name="submit" class="btn btn-outline-primary btn-sm" value="'. $row['id'] .'" style="background-color: lightblue; color:black; border-color:black">Ištrinti</button></form>
-
-                                <a href="?path=darbuotojai&update='. $row['id'].'" type="button" name="submit" class="btn btn-primary btn-sm" style="background-color: lightblue; color:black; border-color:black">Atnaujinti</a>
-                                ' .  '
-                                </div>
-                                </div>
-                                </div>
-                                </td></tr>'
-                                ); 
-                                  
+            print ('<tr>
+                    <td>' . $i . '</td>
+                    <td>' . $row['name'] . '</td>
+                    <td>' . $row['project_name'] . '</td>
+                    <td>' . '<form action="'. $_SERVER['PHP_SELF'] .'" method="post" >
+                            <div class="container-fluid">
+                            <div class="row">
+                            <div class="col-12">
+                            <button type="submit" name="submit" class="btn btn-outline-primary btn-sm" value="'. $row['id'] .'" style="background-color: lightblue; color:black; border-color:black">Ištrinti</button></form>
+                            <a href="?path=darbuotojai&update='. $row['id'].'" type="button" name="submit" class="btn btn-primary btn-sm" style="background-color: lightblue; color:black; border-color:black">Atnaujinti</a>
+                            ' .  '
+                            </div>
+                            </div>
+                            </div>
+                            </td></tr>'
+                            );            
               $i++;
           }
               print('</tbody></table>');
@@ -177,7 +210,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <input type="text" name="name" class="form-control" id="name" placeholder="Naujas darbuotojo vardas, pavardė">
             </div>
                   <div class="col-2">
-                        <button type="submit" name="submit" class="btn btn-primary" style="background-color: lightblue; color:black; border-color:black">Pridėti darbuotoją</button>
+                        <button type="submit" name="submit" class="btn btn-primary" style="background-color: lightblue; color:black; border-color:black; margin-bottom: 20px">Pridėti darbuotoją</button>
                   </div>
                       </form>
                       <div class="col-4"></div>
@@ -185,125 +218,59 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>       
       </div>
 
-
         <?php if(isset($_GET["update"])): ?>
                 <?php $employess_id = $_GET["update"]; ?>
-           <form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>?path=darbuotojai">  
-          
-          <?php 
-          $sql = 
-          '
-          SELECT
-              name
-          FROM Employees 
-              WHERE id = '. $employess_id;
-          $result = mysqli_query($conn, $sql);
+                <div class="container">
+                  <div class="row">
+                      <div class="col-4">
+                      <form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>?path=darbuotojai">
+                      <input type="hidden" id="name_id" name="name_id" value="<?php echo $employess_id; ?>">
 
-          if (mysqli_num_rows($result) > 0) {
-          while($row = mysqli_fetch_assoc($result)) {
-            echo '<div class="container">
-            <div class="row">
-             <div class="col-4">
-            <input type="text" name="update_name" class="form-control" id="name" placeholder="" value="'. $row['name'] .'">
-            </div>
-            </div>
-            </div>';
-          }
-         } 
-        ?>
+                        <?php 
+                          $sql = 
+                          '
+                          SELECT
+                              name
+                          FROM Employees 
+                              WHERE id = '. $employess_id;
+                          $result = mysqli_query($conn, $sql);
 
-        <div class="container">
-          <div class="row">
-              <div class="col-4">
-                <select class="form-select" aria-label="Default select example">
-                  <option selected>Projektai</option>
+                          if (mysqli_num_rows($result) > 0) {
+                          while($row = mysqli_fetch_assoc($result)) {
+                            echo '<input type="text" name="update_name" class="form-control" id="name" placeholder="" value="'. $row['name'] .'">';
+                          }
+                        } 
+                        ?>
+                        <select class="form-select" aria-label="Default select example" name="project_id">
+                          <option selected disabled>Projektai</option>
+                          <?php
+                          $sql = 
+                                '
+                                SELECT
+                                    id,
+                                    project_name
+                                FROM Projects 
+                                ';
+                                $result = mysqli_query($conn, $sql);
 
-                <?php
-            $sql = 
-                  '
-                  SELECT
-                      id,
-                      project_name
-                  FROM Projects 
-                  ';
-                  $result = mysqli_query($conn, $sql);
+                                if (mysqli_num_rows($result) > 0) {
+                                  while($row = mysqli_fetch_assoc($result)) {
+                                    echo '<option value="'.$row['id'].'">'.$row['project_name'].'</option>' 
+                                    ;
+                                  }
+                                } else {
+                                  echo 'no records';
+                                }
+                            ?>
+                          </select>
+                          <button type="submit" name="update_darbuotojai" class="btn btn-primary" style="background-color: lightblue; color:black; border-color:black">Atnaujinti</button>
+                      
+                      </form>
 
-                  if (mysqli_num_rows($result) > 0) {
-                    while($row = mysqli_fetch_assoc($result)) {
-                      echo '<option value="'.$row['id'].'">'.$row['project_name'].'</option>' 
-                      ;
-                    }
-                  } else {
-                    echo 'no records';
-                  }
-              ?>
-            </div>
-          </div>
-      </div>
-
-
-
-
-            <?php
-              if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $update_name = $_POST['update_name'];
-
-                echo 'testuojam';
-              }
-              ?>
-
-
-
-            <?php
-               $sql = '
-               UPDATE employee 
-               set id=' . $_POST['id'] .',
-               name=' . $_POST['name'] . ',
-               WHERE id=' . $_POST['id'] . ')
-               ;'
-               
-              ?>
-
-        </select>
-               <form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>?path=darbuotojai"> 
-                  <button type="submit" name="update_name" class="btn btn-primary" style="background-color: lightblue; color:black; border-color:black">Atnaujinti</button>
-                  </form>
-
-       
-                  <?php endif; ?>
-
-
-
-                  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                    </div>
+                  </div>
+              </div>
+      <?php endif; ?>
 
     <?php elseif(isset($_GET["path"]) and $_GET['path'] == 'projektai'): ?>
 
@@ -372,7 +339,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <input type="text" name="project_name" class="form-control" id="name" placeholder="Naujas projekto pavadinimas">
                   </div>
                   <div class="col-2">
-                        <button type="submit" name="submit" class="btn btn-primary" style="background-color: lightblue; color:black; border-color:black">Pridėti projektą</button>
+                        <button type="submit" name="submit" class="btn btn-primary" style="background-color: lightblue; color:black; border-color:black; margin-bottom: 20px">Pridėti projektą</button>
                   </div>
                   </form>
             </div>
@@ -380,46 +347,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
       <?php if(isset($_GET["update"])): ?>
               <?php $project_id = $_GET["update"]; ?>
-           <form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>?path=projektai">  
-            
-          <?php 
-          $sql = 
-          '
-          SELECT
-              project_name
-          FROM Projects 
-              WHERE id = '. $project_id;
-          $result = mysqli_query($conn, $sql);
 
-          if (mysqli_num_rows($result) > 0) {
-          while($row = mysqli_fetch_assoc($result)) {
-            echo '<div class="container">
-            <div class="row">
-            <div class="col-4">
-            <input type="text" name="update_name" class="form-control" id="name" placeholder="" value="'. $row['project_name'] .'">
-            </div>
-            </div>
-            </div>';
-          }
-         } 
-         
-        ?> 
-        <div class="container">
-            <div class="row">
-            <div class="col-4">
-                  <form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>?path=projektai"> 
-                  <button type="submit" name="update_name" class="btn btn-primary" style="background-color: lightblue; color:black; border-color:black">Atnaujinti</button>
-                  </form>
+              <div class="container">
+                  <div class="row">
+                  <div class="col-4">
+                        <form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>?path=projektai"> 
+                        <input type="hidden" id="project_id2" name="project_id2" value="<?php echo $project_id; ?>">
+                        <?php 
+                        $sql = 
+                        '
+                        SELECT
+                            project_name
+                        FROM Projects 
+                            WHERE id = '. $project_id;
+                        $result = mysqli_query($conn, $sql);
+
+                        if (mysqli_num_rows($result) > 0) {
+                          while($row = mysqli_fetch_assoc($result)) {
+                            echo '<input type="text" name="project_name2" class="form-control" id="project_name2" placeholder="" value="'. $row['project_name'] .'">';
+                          }
+                        } 
+                      
+                      ?> 
+
+                        <button type="submit" name="update_project2" class="btn btn-primary" style="background-color: lightblue; color:black; border-color:black">Atnaujinti</button>
+                        </form>
+                        </div>
                   </div>
-            </div>
-          </div>
-        
-               
-<?php endif ?>  
-
+                </div>
+                <?php endif ?> 
 <?php endif; ?>
-
-
 
          <!-- Option 1: Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
