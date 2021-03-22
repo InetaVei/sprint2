@@ -14,7 +14,7 @@ To create a fully working CRUD (create/read/update/delete) application using PHP
 - Clone the repository;
 - Import 'sprint2.sql' script into local SQL Server (e.g MySQL Workbench) and create a database; 
 - Use AMPPS or other open-source platform to launch a PHP interpreter;
-- Open the path where you can launch php interpreter, e.g. http//localhost/sprin2/
+- Open the path where you can launch php interpreter, e.g. http//localhost/sprint2/
 
 
 ## Authors
